@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+# One-way file sync: Omarchy VM  --->  Arch VPS.
+# Deliberately one-way. The VPS is a destination, never a source.
+set -euo pipefail
+
+CONF="${XDG_CONFIG_HOME:-$HOME/.config}/arch-dotfiles/sync.conf"
+
+# Defaults, overridable in $CONF
+SRC="$HOME/sync"
+REMOTE="vps"
+DEST="/root/sync"
+
+# shellcheck source=/dev/null
+[ -f "$CONF" ] && source "$CONF"
+
+DELETE=0
+DRYRUN=0
+while [ $# -gt 0 ]; do
+  case "$1" in
+    -n|--dry-run) DRYRUN=1 ;;
+    --delete)     DELETE=1 ;;
+    -h|--help)
+      cat <<'USAGE'
+sync-to-vps [-n|--dry-run] [--delete]
+
+  -n, --dry-run   show what would transfer, change nothing
+      --delete    also remove remote files absent locally (prompts first)
+
+Config: ~/.config/arch-dotfiles/sync.conf  (SRC, REMOTE, DEST)
+USAGE
+      exit 0 ;;
+    *) echo "unknown option: $1" >&2; exit 2 ;;
+  esac
+  shift
+done
+
+[ -d "$SRC" ] || { echo "source directory does not exist: $SRC" >&2; exit 1; }
+
+args=(-avz --human-readable --partial --info=stats1,progress2
+      --exclude '.DS_Store' --exclude '*.swp' --exclude '.git/')
+
+[ "$DRYRUN" -eq 1 ] && args+=(--dry-run)
+
+if [ "$DELETE" -eq 1 ]; then
+  # Destructive: mirrors deletions onto the remote. Always confirm.
+  echo "About to DELETE remote files under $REMOTE:$DEST that are absent from $SRC."
+  read -r -p "Type 'yes' to continue: " reply
+  [ "$reply" = "yes" ] || { echo "aborted"; exit 1; }
+  args+=(--delete)
+fi
+
+# Trailing slash on SRC: copy the contents, not the directory itself.
+exec rsync "${args[@]}" "$SRC/" "$REMOTE:$DEST/"

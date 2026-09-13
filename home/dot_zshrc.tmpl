@@ -1,0 +1,28 @@
+# Managed by ~/src/arch-dotfiles (chezmoi). Edit the source, not this file.
+# Machine: {{ .hostnick }}
+
+export EDITOR=nvim
+export VISUAL=nvim
+
+# History
+HISTFILE=~/.zsh_history
+HISTSIZE=50000
+SAVEHIST=50000
+setopt hist_ignore_all_dups share_history inc_append_history
+
+# Completion
+autoload -Uz compinit && compinit
+
+alias ll='ls -lah'
+alias gs='git status -sb'
+
+{{ if .desktop }}
+# --- Omarchy desktop only ---
+alias sync-vps='~/.local/bin/sync-to-vps'
+{{ else }}
+# --- headless VPS only ---
+export SYSTEMD_PAGER=
+{{ end }}
+
+# Local, unmanaged overrides (never committed).
+[ -f ~/.zshrc.local ] && source ~/.zshrc.local

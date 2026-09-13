@@ -1,0 +1,2 @@
+# Omarchy VM extras (desktop). Omarchy manages its own base set --
+# only list things Omarchy does NOT already install.

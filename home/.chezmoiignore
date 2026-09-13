@@ -1,0 +1,4 @@
+# Desktop-only trees never land on the headless VPS.
+{{ if not .desktop }}
+.config/hypr
+{{ end }}

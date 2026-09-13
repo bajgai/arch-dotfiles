@@ -1,0 +1,6 @@
+{{- $desktop := promptBoolOnce . "desktop" "Is this a desktop machine (Omarchy / Hyprland)" -}}
+{{- $hostnick := promptStringOnce . "hostnick" "Short machine nickname (e.g. omarchy, vps)" -}}
+
+[data]
+    desktop  = {{ $desktop }}
+    hostnick = {{ $hostnick | quote }}
