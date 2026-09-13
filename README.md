@@ -45,6 +45,14 @@ git clone <this repo> ~/src/arch-dotfiles
 It prompts once for whether the machine is a desktop and for a short nickname,
 then applies the dotfiles and installs the matching package set.
 
+The clone is the single source of truth: `bootstrap.sh` records it as chezmoi's
+`sourceDir`, so there is never a second copy under `~/.local/share/chezmoi` to
+drift from. Confirm after the first run:
+
+```sh
+chezmoi source-path   # must print a path inside your clone
+```
+
 Day to day:
 
 ```sh
@@ -76,3 +84,12 @@ the VM, add its public half to the VPS, and add a `Host vps` entry to the VM's
   state; `chezmoi` will then write to that user's home instead of `/root`.
 - `home/dot_config/hypr/*.conf` are placeholders. Replace them with the real
   override files from the VM (`ls ~/.config/hypr` to see what exists).
+- **Shell not yet settled.** This repo manages `dot_zshrc.tmpl`, but Omarchy
+  ships bash as the login shell with a `~/.bashrc` that sources
+  `~/.local/share/omarchy/default/bash/rc`. So either the zshrc is never
+  loaded on the VM, or switching with `chsh` drops Omarchy's shell defaults.
+  Check `echo $SHELL` and `head -5 ~/.bashrc` on the VM, then decide: manage
+  `.bashrc` while preserving Omarchy's source line, or commit to zsh knowingly.
+- The templates here (`promptBoolOnce`, the `.chezmoiignore` conditional,
+  `.chezmoiroot`) are unverified — chezmoi is not installed on the Mac, so they
+  are first exercised by `bootstrap.sh` on a target machine.
