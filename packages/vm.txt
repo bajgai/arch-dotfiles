@@ -1,2 +1,4 @@
 # Omarchy VM extras (desktop). Omarchy manages its own base set --
 # only list things Omarchy does NOT already install.
+# Baseline of what Omarchy 4.0.2 ships: omarchy-4.0.2-base.txt
+github-cli

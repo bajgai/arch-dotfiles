@@ -1,0 +1,10 @@
+# Exact agent CLI pins applied by packages/vm-agents.sh via `mise use -g`.
+# Omarchy installs agents with mise; omarchy-update runs `mise up`, which
+# leaves exact pins alone. Change a version here, never with `mise use` by hand.
+[tools]
+antigravity-cli = "1.2.2"
+claude = "2.1.270"
+codex = "0.154.0"
+node = "26.8.2"
+opencode = "1.18.30"
+pi = "0.85.1"

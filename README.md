@@ -29,8 +29,11 @@ home/                 chezmoi source directory
   .chezmoi.toml.tmpl  prompts once for `desktop` and `hostnick`
   .chezmoiignore      excludes .config/hypr on non-desktop machines
   dot_zshrc.tmpl      shared shell, with per-machine branches
-  dot_config/hypr/    Omarchy user overrides (desktop only)
+  dot_config/hypr/    Omarchy user overrides, Lua (desktop only)
 packages/             pacman manifests: common / vm / vps
+  omarchy-4.0.2-base.txt  what Omarchy itself ships (reference, not installed)
+  vm-agents.lock      exact mise pins for the agent CLIs
+  vm-agents.sh        applies the pins; installs hcom and br with checksums
 bin/sync-to-vps       one-way file sync, VM -> VPS
 bootstrap.sh          run on a target machine to set it up
 ```
@@ -82,14 +85,18 @@ the VM, add its public half to the VPS, and add a `Host vps` entry to the VM's
 
 - The VPS is currently accessed as `root`. A normal user there is the better end
   state; `chezmoi` will then write to that user's home instead of `/root`.
-- `home/dot_config/hypr/*.conf` are placeholders. Replace them with the real
-  override files from the VM (`ls ~/.config/hypr` to see what exists).
-- **Shell not yet settled.** This repo manages `dot_zshrc.tmpl`, but Omarchy
-  ships bash as the login shell with a `~/.bashrc` that sources
-  `~/.local/share/omarchy/default/bash/rc`. So either the zshrc is never
-  loaded on the VM, or switching with `chsh` drops Omarchy's shell defaults.
-  Check `echo $SHELL` and `head -5 ~/.bashrc` on the VM, then decide: manage
-  `.bashrc` while preserving Omarchy's source line, or commit to zsh knowingly.
-- The templates here (`promptBoolOnce`, the `.chezmoiignore` conditional,
-  `.chezmoiroot`) are unverified — chezmoi is not installed on the Mac, so they
-  are first exercised by `bootstrap.sh` on a target machine.
+- `home/dot_config/hypr/*.lua` are still placeholders; add real overrides as
+  they are needed.
+- Shell decision, made 2026-09-13: zsh, switched by `bootstrap.sh` with `chsh`.
+  The desktop branch of `dot_zshrc.tmpl` sources Omarchy's
+  `/usr/share/omarchy/default/bash/env-bootstrap` (its single source of truth
+  for `OMARCHY_PATH`, the mise shims and `~/.local/bin`) and runs
+  `mise activate zsh`, so Omarchy's tools stay on PATH. Omarchy's bash aliases
+  and functions are not carried over.
+- `cursor-agent` is not in the guest's mise registry (mise 2026.8.11). Add it
+  to `vm-agents.lock` once `omarchy-update` delivers a newer mise.
+- Verify once after the first `omarchy-update` that `mise up` left the exact
+  pins in `vm-agents.lock` untouched.
+- The chezmoi templates were dry-run against the real VM on 2026-09-13
+  (`chezmoi apply --dry-run` with `desktop=true`); the VPS branch is still
+  untested.
