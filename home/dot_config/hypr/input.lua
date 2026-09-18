@@ -1,0 +1,11 @@
+-- Managed by ~/src/arch-dotfiles (chezmoi). Edit the source, not this file.
+-- Omarchy 4 loads this AFTER its defaults; uncommented settings replace them.
+-- Reference: https://wiki.hypr.land/Configuring/Basics/Variables/#input
+--
+-- If the macOS host swallows Cmd (Super) before the VM sees it, swapping
+-- Alt and Super makes Option act as Super inside the guest:
+-- hl.config({
+--   input = {
+--     kb_options = "altwin:swap_alt_win",
+--   },
+-- })

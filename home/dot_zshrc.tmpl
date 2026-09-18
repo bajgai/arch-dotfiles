@@ -18,6 +18,13 @@ alias gs='git status -sb'
 
 {{ if .desktop }}
 # --- Omarchy desktop only ---
+# Omarchy's single source of truth for OMARCHY_PATH and the mise shims /
+# ~/.local/bin PATH entries. Omarchy's stock ~/.bashrc sources the same file;
+# without it every mise-installed agent CLI (claude, codex, agy, pi, ...)
+# disappears from this shell.
+[ -r /usr/share/omarchy/default/bash/env-bootstrap ] && . /usr/share/omarchy/default/bash/env-bootstrap
+# Omarchy's bash rc runs `mise activate bash`; this is the zsh equivalent.
+command -v mise >/dev/null && eval "$(mise activate zsh)"
 alias sync-vps='~/.local/bin/sync-to-vps'
 {{ else }}
 # --- headless VPS only ---

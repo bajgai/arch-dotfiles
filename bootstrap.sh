@@ -35,6 +35,18 @@ if [ "${#PKGS[@]}" -gt 0 ]; then
 fi
 
 if [ "$DESKTOP" = "true" ]; then
+  # Omarchy ships bash as the login shell. This repo manages zsh, and the
+  # desktop branch of dot_zshrc.tmpl sources Omarchy's env-bootstrap so its
+  # PATH and mise setup survive the switch. chsh asks for the user's password.
+  ZSH_BIN="$(command -v zsh)"
+  if [ -n "$ZSH_BIN" ] && [ "$(getent passwd "$USER" | cut -d: -f7)" != "$ZSH_BIN" ]; then
+    echo "==> switching login shell to $ZSH_BIN"
+    chsh -s "$ZSH_BIN"
+  fi
+
+  echo "==> agent CLIs, hcom and br"
+  "$HERE/packages/vm-agents.sh"
+
   echo "==> installing sync-to-vps"
   mkdir -p "$HOME/.local/bin"
   install -m 0755 "$HERE/bin/sync-to-vps" "$HOME/.local/bin/sync-to-vps"

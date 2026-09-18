@@ -1,0 +1,16 @@
+-- Managed by ~/src/arch-dotfiles (chezmoi). Edit the source, not this file.
+-- Omarchy 4 loads this AFTER its defaults (see ~/.config/hypr/hyprland.lua),
+-- so anything here wins. Omarchy's own files live under
+-- /usr/share/omarchy/default/hypr/ and are never managed by this repo.
+--
+-- See current bindings: omarchy menu keybindings --print
+--
+-- Add a binding:
+-- o.bind("SUPER + SHIFT + R", "SSH", "alacritty -e ssh your-server")
+--
+-- Change a default: unbind first, then bind again.
+-- hl.unbind("SUPER + SPACE")
+-- o.bind("SUPER + SPACE", "Omarchy menu", "omarchy-menu toggle root")
+--
+-- Disable a default without replacing it.
+-- hl.unbind("SUPER + SHIFT + B")
